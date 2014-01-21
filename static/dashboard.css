@@ -1,0 +1,94 @@
+
+body
+{
+font-family: 'Open Sans', arial;
+-webkit-font-smoothing: antialiased;
+}
+#info
+{
+position: absolute;
+top: 5px;
+left: 70px;
+font-size:1.35em;
+}
+#logout
+{
+position: absolute;
+top: 10px;
+right: 5px;
+}
+#usuario
+{
+position: absolute;
+top: 10px;
+font-size:1.2em;
+right: 45px;
+}
+hr { display: block; height: 1px;
+    border: 0; border-top: 1px solid #D5D5D5;
+    margin: 1em 0; padding: 0; }
+#iniciar
+{
+position: absolute;
+left: 10px;
+top: 90px;
+bottom: 10px;
+width: 700px;
+background-color: #ECECEC;
+text-align: center;
+}
+#iniciar:hover
+{
+background-color: #E8E8E8;
+}
+#iniciar h2
+{
+font-size: 5em;
+}
+#iniciar a:link 
+{
+text-decoration:none;
+color: black;
+font-size:1.5em;
+}
+#iniciar a:visited 
+{
+text-decoration:none;
+color: black;
+font-size:1.5em;
+}
+#iniciar a:hover 
+{
+text-decoration:none;
+color: black;
+font-size:1.5em;
+}
+#iniciar a:active 
+{
+text-decoration:none;
+color: black;
+font-size:1.5em;
+}
+#explorar
+{
+position: absolute;
+right: 10px;
+top: 90px;
+bottom: 10px;
+width: 700px;
+background-color: #ECECEC;
+text-align: center;
+}
+#explorar:hover
+{
+background-color: #E8E8E8;
+}
+#explorar h2
+{
+font-size: 5em;
+}
+#explorar img
+{
+width: 50%;
+height: 50%;
+}

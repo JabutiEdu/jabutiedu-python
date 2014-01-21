@@ -1,0 +1,53 @@
+<html>
+<head>
+<script>
+document.onkeydown = executa;
+function executa(e){
+    switch(e.keyCode){
+        case 87:
+            httpGet('pt');
+            break;
+        case 65:
+            httpGet('pd');
+            break;
+        case 83:
+            httpGet('pf');
+            break;
+        case 68:
+            httpGet('pe');
+            break;
+    }
+}
+function httpGet(comando){
+    var xmlHttp = null;
+
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", "/exec/" + comando, false);
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+}
+</script>
+<title>M&oacute;dulo 1</title>
+<style>
+html {
+    text-align: center;
+}
+h1 {
+    font-family: Helvetica, Arial, sans;
+}
+button {
+    margin: 0 auto;
+    padding: 30px;
+    margin: 30px;
+}
+</style>
+</head>
+<body>
+<br />
+<h1>Jabuti Edu</h1>
+<button onclick="httpGet('pt')">PF</button><br />
+<button onclick="httpGet('pd')">PD</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<button onclick="httpGet('pe')">PE</button><br />
+<button onclick="httpGet('pf')">PT</button>
+</body>
+</html>
