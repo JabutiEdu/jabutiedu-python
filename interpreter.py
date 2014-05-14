@@ -30,47 +30,47 @@ def desligar():
     GPIO.cleanup()
 
 message = sys.argv[1]
-time = int(sys.argv[2])
+delay = int(sys.argv[2])
 if message == 'pf':
     GPIO.output(24, GPIO.HIGH)
     GPIO.output(23, GPIO.LOW)
     GPIO.output(17, GPIO.HIGH)
     GPIO.output(22, GPIO.LOW)
-    time.sleep(time)
+    time.sleep(delay)
     parar()
 elif message == 'pt':
     GPIO.output(24, GPIO.LOW)
     GPIO.output(23, GPIO.HIGH)
     GPIO.output(22, GPIO.HIGH)
     GPIO.output(17, GPIO.LOW)
-    time.sleep(time)
+    time.sleep(delay)
     parar()
 elif message == 'pe':
     GPIO.output(23, GPIO.LOW)
     GPIO.output(24, GPIO.HIGH)
     GPIO.output(22, GPIO.HIGH)
     GPIO.output(17, GPIO.LOW)
-    time.sleep(time)
+    time.sleep(delay)
     parar()
 elif message == 'lde':
     GPIO.output(9, GPIO.HIGH)
     GPIO.output(11, GPIO.HIGH)
-    time.sleep(time)
+    time.sleep(delay)
     desligar()
 elif message == 'ld':
     GPIO.output(9, GPIO.HIGH)
-    time.sleep(time)
+    time.sleep(delay)
     desligar()
 elif message == 'le':
     GPIO.output(11, GPIO.HIGH)
-    time.sleep(time)
+    time.sleep(delay)
     desligar()
 elif message == 'pd':
     GPIO.output(24, GPIO.LOW)
     GPIO.output(23, GPIO.HIGH)
     GPIO.output(17, GPIO.HIGH)
     GPIO.output(22, GPIO.LOW)
-    time.sleep(time)
+    time.sleep(delay)
     parar()
 elif message == 'som':
     os.system("espeak \"oi, eu sou a jabuti edu\" -v portugal -s140 -p60 -g2 -a100")
