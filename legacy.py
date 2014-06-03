@@ -1,11 +1,18 @@
 import web
 import hashlib
+from twitter import *
 import os
 import sys
 import RPi.GPIO as GPIO
 import time
+import random
+import string
+
+t = Twitter(auth=OAuth('2208893204-EnDOnXeRjRgesZ9ZpAqjVzG0ABKjaekoZcExU9m', '5YViHIgTiKmTYogJOJ9bedfeMLKHOZPGzwcJI1tDKLRKB', 
+                      'Q9BYDAmIYl93w40wSudg', '4HuF5xVvNRWjBufX1HnZK6V2Zia1cn8SkATWH8ZTO0'))
 
 db = web.database(dbn='mysql', user='root', pw='jabutiedu', db='jabuti')
+
 def parar():
   GPIO.output(23, GPIO.LOW)
   GPIO.output(24, GPIO.LOW)
@@ -21,55 +28,38 @@ def desligar():
 urls = ("/login", "login",
         "/exec/(.+)", "executar",
         "/modulo1", "modulo1",
-        "/cadastro", "signup",
+        "/cadastro", "cadastro",
         "/", "dashboard"
 )
 
 app = web.application(urls, globals())
 render = web.template.render('templates/')
-if web.config.get('_session') is None:
-    session = web.session.Session(app, web.session.DBStore(db, 'sessions'), initializer={'logged': 0, 'username': 0, 'permission': 0})
-    web.config._session = session
-else:
-    session = web.config._session
 
-class dashboard:        
+class dashboard:
     def GET(self):
-        if session.logged:
-            return render.dashboard(session.username)
+        logado = web.cookies(logado = False).logado
+        if logado:
+            return render.dashboard(web.cookies().usuario)
         else:
-            raise web.redirect('/login')
+            raise web.seeother("/login")
 class login:
     def GET(self):
-        return render.login()
+        return render.index()
     def POST(self):
         data = web.input()
-        username = data.username
-        db_data = db.select('users', where='username=$username', vars=locals())[0]
-        digest = ""
-        digest = hashlib.sha1("raspio" + data.password).hexdigest()
-        print data.password
-        print digest
-        print db_data['password']
-        if digest == db_data['password']:
-            session.logged = 1
-            session.username = data.username
-            session.permission = db_data['permission']
-            print session.logged
-            return web.seeother('/')
+        query = 'usuario = \"' + data.username + '\"'
+        dados = db.select('usuarios', where=query).list()
+        dados = dados[0]
+        print dados.senha
+        if data.senha == dados.senha:
+            web.setcookie("logado", True)
+            web.setcookie("usuario", data.username)
+            raise web.seeother("/")
         else:
-            return "Login Failed"
-class signup:
-    def GET(self):
-        return render.signup()
-    def POST(self):
-        data = web.input()
-        password = ""
-        password = hashlib.sha1("raspio" + data.password).hexdigest()
-        db.insert('users', username = data.username, password = password, permission = '0')
-        return web.seeother("/login")
+            raise web.seeother("/login")
 class executar:
     def GET(self, message):
+        code = str(random.randint(10000, 99999999))
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(23, GPIO.OUT)
         GPIO.setup(24, GPIO.OUT)
@@ -129,9 +119,6 @@ class executar:
         return "OK"
 class modulo1:
     def GET(self):
-        if session.logged:
-             return render.modulo1()
-        else:
-             return web.redirect('/login')
+        return render.modulo1()
 if __name__ == "__main__":
     app.run()
