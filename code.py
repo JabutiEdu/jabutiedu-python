@@ -5,6 +5,7 @@ import sys
 import RPi.GPIO as GPIO
 import time
 
+#Conecta ao banco de dados local
 db = web.database(dbn='mysql', user='root', pw='jabutiedu', db='jabuti')
 def parar():
   GPIO.output(23, GPIO.LOW)
@@ -18,6 +19,7 @@ def desligar():
   GPIO.output(11, GPIO.LOW)
   GPIO.cleanup()
 
+#Define as URLs e suas respectivas classes
 urls = ("/login", "login",
         "/exec/(.+)", "executar",
         "/modulo1", "modulo1",
@@ -26,7 +28,11 @@ urls = ("/login", "login",
 )
 
 app = web.application(urls, globals())
+
+#Define a pasta onde ficarao guardados os templates
 render = web.template.render('templates/')
+
+#Configura as sessoes
 if web.config.get('_session') is None:
     session = web.session.Session(app, web.session.DBStore(db, 'sessions'), initializer={'logged': 0, 'username': 0, 'permission': 0})
     web.config._session = session
@@ -45,12 +51,16 @@ class login:
     def POST(self):
         data = web.input()
         username = data.username
+        #Pega dados do usuario
         db_data = db.select('users', where='username=$username', vars=locals())[0]
+        #Adiciona um salt a senha recebida
         digest = ""
         digest = hashlib.sha1("raspio" + data.password).hexdigest()
+        #Mensagens de debug (a remover)
         print data.password
         print digest
         print db_data['password']
+        #Verifica se a senha (ja hasheada em com salt) coincide com a armazenada
         if digest == db_data['password']:
             session.logged = 1
             session.username = data.username
@@ -65,11 +75,15 @@ class signup:
     def POST(self):
         data = web.input()
         password = ""
+        #Adiciona o salt e hasheia a senha
         password = hashlib.sha1("raspio" + data.password).hexdigest()
+        #Insere os dados no BD 
+        #TODO: Adicionar verificacao de usuario ja existente
         db.insert('users', username = data.username, password = password, permission = '0')
         return web.seeother("/login")
 class executar:
     def GET(self, message):
+        #Inicializa pinos
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(23, GPIO.OUT)
         GPIO.setup(24, GPIO.OUT)
@@ -81,6 +95,7 @@ class executar:
         GPIO.output(24, GPIO.LOW)
         GPIO.output(17, GPIO.LOW)
         GPIO.output(22, GPIO.LOW)
+        #Verifica o argumento recebido e executa a ordem de acordo
         if message == 'pf':
             GPIO.output(24, GPIO.HIGH)
             GPIO.output(23, GPIO.LOW)
